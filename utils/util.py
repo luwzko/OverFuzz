@@ -11,12 +11,12 @@ def read_config_file(config : str) -> list:
         exit(0)
     return [x.split(" : ")[1][:-1] for x in confs if not x == "\n"]
 
-def write_report_card(where : str, fuzzer : str, nop_multiplier : int, wordlist : str) -> str:
+def write_report_card(success = False : bool, where : str, fuzzer : str, nop_multiplier : int, wordlist : str) -> str:
 
         path = ""
 
         report_card = f"""
-        \~~~~OverFuzz Report Card~~~~/
+        Report Card:
             Success = {success}\n
             Fuzzer = {fuzzer}\n
             Wordlist = {wordlist}\n

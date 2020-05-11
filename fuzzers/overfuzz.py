@@ -20,7 +20,7 @@ class OverFuzz():
         elif self.__detection.lower() == "output":
             self.__detection = self.__output_detect
 
-    def _overfuzz(self) -> None:
+    def fuzz(self) -> None:
 
         print("(0ver) Fuzzing.")
 
@@ -41,7 +41,7 @@ class OverFuzz():
         proc2.join()
 
         if self.__detection():
-            path = write_report_card("", "", 0, "")
+            path = write_report_card(True, "", "", 0, "")
             print(f"[!] Done, report card can be found @ {path}")
             exit(0)
 
@@ -100,7 +100,7 @@ class OverFuzz():
 
         return any([ele for ele in out if ele.lower() in self.__outputs[-2].lower() or ele.lower() in self.__outputs[-1].lower()])
 
-    def __get_invalid_addr(self) -> str:
+    def __gen_invalid_addr(self) -> str:
 
         rand1 = random.randint(16, 256)
         rand2 = random.randint(16, 256)

@@ -11,10 +11,10 @@ def main() -> None:
 
     overfuzz = OverFuzz(confs[3], confs[2], confs[4])
 
-    overfuzz._overfuzz()
+    overfuzz.fuzz()
 
 if __name__ == "__main__":
-    setrecursionlimit(65535)
+    setrecursionlimit(1000)
     try:
         main()
     except RecursionError:
