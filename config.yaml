@@ -1,0 +1,6 @@
+
+fuzzing_target : URL
+wordlist : lololol
+detection : Mixed
+vuln_file : vuln.exe
+estimated_input_variables : 2
