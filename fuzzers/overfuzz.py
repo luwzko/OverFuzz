@@ -41,11 +41,11 @@ class OverFuzz():
         proc2.join()
 
         if self.__detection():
-            path = write_report_card(True, "", "", 0, "")
+            path = write_report_card(True, "", "Overflow", self.__multiplier, "None")
             print(f"[!] Done, report card can be found @ {path}")
             exit(0)
 
-        self._overfuzz()
+        self.fuzz()
 
     def __input_both(self) -> str:
 
@@ -83,8 +83,8 @@ class OverFuzz():
 
         else:
 
-            cmd_0 = f".replace | {self.__file} $({py_command_king_0})"
-            cmd_1 = f".replace | {self.__file} $({py_command_king_1})"
+            cmd_0 = f".replace | {self.__file} $({pycmd_king0})"
+            cmd_1 = f".replace | {self.__file} $({pycmd_king1})"
 
         return (cmd_0, cmd_1)
 
@@ -92,19 +92,19 @@ class OverFuzz():
         return self.__signal_detect() or self.__output_detect()
 
     def __signal_detect(self) -> bool:
-        return any([ele for ele in [-11, 3221225725] if ele == self.__signals[-2] or ele == self.__signals[-1]])
+        return any(True if self.__signals[-2] == -11 or self.__signals[-1] == -11)
 
     def __output_detect(self) -> bool:
 
         outs = ["segmentation", "buffer", "overflow", "seg", "smashing", "stack"]
 
-        return any([ele for ele in out if ele.lower() in self.__outputs[-2].lower() or ele.lower() in self.__outputs[-1].lower()])
+        return any([ele for ele in outs if ele.lower() in self.__outputs[-2].lower() or ele.lower() in self.__outputs[-1].lower()])
 
     def __gen_invalid_addr(self) -> str:
 
-        rand1 = random.randint(16, 256)
-        rand2 = random.randint(16, 256)
-        rand3 = random.randint(16, 256)
-        rand4 = random.randint(16, 256)
+        rand1 = hex(random.randint(15, 256))
+        rand2 = hex(random.randint(15, 256))
+        rand3 = hex(random.randint(15, 256))
+        rand4 = hex(random.randint(15, 256))
 
-        return hex(rand1) + hex(rand2) + hex(rand3) + hex(rand4)
+        return rand1 + rand2 + rand3 + rand4
