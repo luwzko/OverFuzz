@@ -47,22 +47,12 @@ class OverFuzz():
 
         self.fuzz()
 
-    def __input_both(self) -> str:
-
-        command0, command1 = self.__cmd_line()
-        print_command = self.__stdin()
-
-        command0 = command0.replace(".replace", print_command)
-        command1 = command1.replace(".replace", print_command)
-
-        return (command0, command1)
-
     def __stdin(self) -> str:
 
         nop = "\x90" * self.__multiplier
-        return f'\'python -c \"print(u\'{"".join([f'{nop}{self.__gen_invalid_addr()}' for x in range(self.__estimated_vars)])}\')\"\''
+        return f"\'python -c \"print(u\'{"".join([f'{nop}{self.__gen_invalid_addr()}' for x in range(self.__estimated_vars)])}\')\"\'"
 
-    def __cmd_line(self) -> str:
+    def __(self) -> str:
 
         nop0 = (self.__multiplier * "\x90")
         nop1 = ((self.__multiplier + 1) * "\x90")
@@ -76,15 +66,17 @@ class OverFuzz():
         pycmd_king0 = f"\'python -c {pycmd_prince0}\'"
         pycmd_king1 = f"\'python -c {pycmd_prince1}\'"
 
+        stdin = self.__stdin()
+
         if platform.startswith('win32') or platform.startswith('cygwin'):
 
-            cmd_1 = f'FOR /F \"delims==\" %G IN ({pycmd_king0}) DO .replace {self.__file} %G'
-            cmd_0 = f'FOR /F \"delims==\" %G IN ({pycmd_king1}) DO .replace {self.__file} %G'
+            cmd_0 = f"FOR /F \"delims==\" %G IN ({pycmd_king0}) DO {stdin} | {self.__file} %G"
+            cmd_1 = f"FOR /F \"delims==\" %G IN ({pycmd_king1}) DO {stdin} | {self.__file} %G"
 
         else:
 
-            cmd_0 = f".replace | {self.__file} $({pycmd_king0})"
-            cmd_1 = f".replace | {self.__file} $({pycmd_king1})"
+            cmd_0 = f"{stdin} | {self.__file} $({pycmd_king0})"
+            cmd_1 = f"{stdin} | {self.__file} $({pycmd_king1})"
 
         return (cmd_0, cmd_1)
 
