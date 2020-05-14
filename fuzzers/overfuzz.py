@@ -50,7 +50,7 @@ class OverFuzz():
     def __stdin(self) -> str:
 
         nop = "\x90" * self.__multiplier
-        return f"\'python -c \"print(u\'{"".join([f'{nop}{self.__gen_invalid_addr()}' for x in range(self.__estimated_vars)])}\')\"\'"
+        return f"\'python -c \"import sys; sys.stdout.buffer.write(\'{"".join([f'{nop}{self.__gen_invalid_addr()}' for x in range(self.__estimated_vars)])}\')\"\'"
 
     def __(self) -> str:
 
@@ -60,23 +60,23 @@ class OverFuzz():
         addr0 = self.__gen_invalid_addr()
         addr1 = self.__gen_invalid_addr()
 
-        pycmd_prince0 = f"\"print(\'{nop0}{addr0}\')\""
-        pycmd_prince1 = f"\"print(\'{nop1}{addr1}\')\""
+        write0 = f"\"import sys; sys.stdout.buffer.write(\'{nop0}{addr0}\')\""
+        write1 = f"\"import sys; sys.stdout.buffer.write(\'{nop1}{addr1}\')\""
 
-        pycmd_king0 = f"\'python -c {pycmd_prince0}\'"
-        pycmd_king1 = f"\'python -c {pycmd_prince1}\'"
+        python_command0 = f"\'python -c {pycmd_prince0}\'"
+        python_command1 = f"\'python -c {pycmd_prince1}\'"
 
         stdin = self.__stdin()
 
         if platform.startswith('win32') or platform.startswith('cygwin'):
 
-            cmd_0 = f"FOR /F \"delims==\" %G IN ({pycmd_king0}) DO {stdin} | {self.__file} %G"
-            cmd_1 = f"FOR /F \"delims==\" %G IN ({pycmd_king1}) DO {stdin} | {self.__file} %G"
+            cmd_0 = f"FOR /F \"delims==\" %G IN ({python_command0}) DO {stdin} | {self.__file} %G"
+            cmd_1 = f"FOR /F \"delims==\" %G IN ({python_command1}) DO {stdin} | {self.__file} %G"
 
         else:
 
-            cmd_0 = f"{stdin} | {self.__file} $({pycmd_king0})"
-            cmd_1 = f"{stdin} | {self.__file} $({pycmd_king1})"
+            cmd_0 = f"{stdin} | {self.__file} $({python_command0})"
+            cmd_1 = f"{stdin} | {self.__file} $({python_command1})"
 
         return (cmd_0, cmd_1)
 
@@ -94,9 +94,9 @@ class OverFuzz():
 
     def __gen_invalid_addr(self) -> str:
 
-        rand1 = hex(random.randint(15, 256))
-        rand2 = hex(random.randint(15, 256))
-        rand3 = hex(random.randint(15, 256))
-        rand4 = hex(random.randint(15, 256))
+        rand1 = "\\x" + hex(random.randint(15, 256))
+        rand2 = "\\x" + hex(random.randint(15, 256))
+        rand3 = "\\x" + hex(random.randint(15, 256))
+        rand4 = "\\x" + hex(random.randint(15, 256))
 
         return rand1 + rand2 + rand3 + rand4
